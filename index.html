@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clock with Confetti</title>
+<style>
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #222;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    flex-direction: column;
+    text-align: center;
+  }
+  .date {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+  }
+  .clock {
+    font-size: 6rem;
+  }
+  .seconds {
+    font-size: 2.5rem;
+    vertical-align: super;
+  }
+  .new-year-text {
+    font-size: 3rem;
+    margin-top: 20px;
+    display: none; /* hidden by default */
+  }
+  .yellow {
+    color: yellow;
+  }
+</style>
+</head>
+<body>
+<div class="date" id="date">Loading date...</div>
+<div class="clock">
+  <span id="hours">00</span>:<span id="minutes">00</span>:<span class="seconds" id="seconds">00</span>
+</div>
+<div class="new-year-text" id="newYearText">
+  HAPPY NEW YEAR <span class="yellow">2026</span>
+</div>
+
+<!-- Confetti library -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script>
+  function updateDate() {
+    const now = new Date();
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('date').textContent = now.toLocaleDateString(undefined, options);
+  }
+
+  function updateClock() {
+    const now = new Date();
+    let hours = now.getHours();
+    let minutes = now.getMinutes();
+    let seconds = now.getSeconds();
+
+    document.getElementById('hours').textContent = String(hours).padStart(2,'0');
+    document.getElementById('minutes').textContent = String(minutes).padStart(2,'0');
+    document.getElementById('seconds').textContent = String(seconds).padStart(2,'0');
+
+    // Trigger confetti and New Year text at midnight (00:00:00)
+    if (hours === 0 && minutes === 0 && seconds === 0) {
+      confetti({
+        particleCount: 200,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+      document.getElementById('newYearText').style.display = 'block';
+    }
+  }
+
+  updateDate();
+  updateClock();
+  setInterval(updateClock, 1000);
+  setInterval(updateDate, 60 * 1000);
+</script>
+</body>
+</html>
