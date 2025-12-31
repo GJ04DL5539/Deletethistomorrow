@@ -3,7 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Clock with Confetti</title>
+<title>2026 oh meter</title>
+
+<!-- PWA Manifest -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#222222">
+
 <style>
   body {
     display: flex;
@@ -15,21 +20,22 @@
     font-family: Arial, sans-serif;
     flex-direction: column;
     text-align: center;
+    margin: 0;
   }
   .date {
-    font-size: 2.5rem;
-    margin-bottom: 30px;
+    font-size: 4rem; /* bigger date */
+    margin-bottom: 40px;
   }
   .clock {
-    font-size: 6rem;
+    font-size: 10rem; /* bigger clock */
   }
   .seconds {
-    font-size: 2.5rem;
+    font-size: 4rem; /* bigger seconds */
     vertical-align: super;
   }
   .new-year-text {
-    font-size: 3rem;
-    margin-top: 20px;
+    font-size: 5rem; /* bigger New Year text */
+    margin-top: 30px;
     display: none; /* hidden by default */
   }
   .yellow {
@@ -38,6 +44,7 @@
 </style>
 </head>
 <body>
+
 <div class="date" id="date">Loading date...</div>
 <div class="clock">
   <span id="hours">00</span>:<span id="minutes">00</span>:<span class="seconds" id="seconds">00</span>
@@ -48,13 +55,16 @@
 
 <!-- Confetti library -->
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
 <script>
+  // Update date
   function updateDate() {
     const now = new Date();
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     document.getElementById('date').textContent = now.toLocaleDateString(undefined, options);
   }
 
+  // Update clock
   function updateClock() {
     const now = new Date();
     let hours = now.getHours();
@@ -65,7 +75,7 @@
     document.getElementById('minutes').textContent = String(minutes).padStart(2,'0');
     document.getElementById('seconds').textContent = String(seconds).padStart(2,'0');
 
-    // Trigger confetti and New Year text at midnight (00:00:00)
+    // Trigger confetti and New Year text at midnight
     if (hours === 0 && minutes === 0 && seconds === 0) {
       confetti({
         particleCount: 200,
@@ -80,6 +90,14 @@
   updateClock();
   setInterval(updateClock, 1000);
   setInterval(updateDate, 60 * 1000);
+
+  // Register service worker for PWA
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js')
+      .then(() => console.log('Service Worker registered'))
+      .catch(err => console.log('Service Worker registration failed:', err));
+  }
 </script>
+
 </body>
 </html>
